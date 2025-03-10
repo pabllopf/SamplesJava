@@ -70,8 +70,33 @@ public class Main {
     //Ex : Fligh from NCE to TYO, route : [NCE,PAR,DXB,TYO,DXB,PAR,NCE] -> OK
     //Flight from NCE to LAX, route : [NCE,LON,LAX,NYC,NCE] -> KO
     public static boolean isRouteSymmetric(String origin, String destination, List<String> route) {
-        return false;
+        // Find the indices of the origin and destination cities in the route list
+        int originIndex = route.indexOf(origin);
+        int destinationIndex = route.indexOf(destination);
+
+        // If either of them is not found, the route is invalid
+        if (originIndex == -1 || destinationIndex == -1) {
+            return false;
+        }
+
+        // Check that the number of stops between origin and destination is the same as the number of stops on the return trip
+        int upwardStops = destinationIndex - originIndex - 1;
+        int downwardStops = route.size() - 1 - route.lastIndexOf(destination) - (route.size() - 1 - route.indexOf(origin));
+
+        if (upwardStops != downwardStops) {
+            return false;
+        }
+
+        // Check that the segment of the route from origin to destination is the exact reverse of the segment from destination to origin
+        for (int i = 0; i <= upwardStops; i++) {
+            if (!route.get(originIndex + 1 + i).equals(route.get(route.size() - 2 - i))) {
+                return false;
+            }
+        }
+
+        return true;
     }
+
 
     // Ex 5 :
     //You need to write an algorithm to check whether a string made of "(" and ")" is balanced.
@@ -278,16 +303,6 @@ public class Main {
         for (int i = 0; i < sequenceA.size(); i++) {
             List<Character> packA = sequenceA.get(i);
             List<Character> packB = sequenceB.get(sequenceB.size() - 1 - i);
-            Collections.reverse(packB);
-            if (!packA.equals(packB)) return false;
-        }
-        return true;
-    }
-    public static boolean isDoublePalindromicSequence(List<List<Character>> sequence) {
-        int n = sequence.size();
-        for (int i = 0; i < n / 2; i++) {
-            List<Character> packA = sequence.get(i);
-            List<Character> packB = sequence.get(n - 1 - i);
             Collections.reverse(packB);
             if (!packA.equals(packB)) return false;
         }
@@ -506,7 +521,6 @@ public class Main {
         List<List<Character>> sequenceA = List.of(List.of('A', 'C', 'C'), List.of('T', 'A', 'G'), List.of('A', 'G', 'C'), List.of('T', 'G', 'G'));
         List<List<Character>> sequenceB = List.of(List.of('G', 'G', 'T'), List.of('C', 'G', 'A'), List.of('G', 'G', 'G'), List.of('G', 'A', 'T', 'T'), List.of('C', 'C', 'A'));
         System.out.println(isPalindromicSequence(sequenceA, sequenceB));
-        System.out.println(isDoublePalindromicSequence(List.of(List.of('T', 'G', 'G', 'A'), List.of('A', 'G', 'C'), List.of('G', 'G', 'G'), List.of('C', 'G', 'A'), List.of('A', 'G', 'G', 'T'))));
 
         // Case 14: Sort even numbers at the beginning and odd numbers at the end
         System.out.println("Case 14: Sort even numbers at the beginning and odd numbers at the end");
